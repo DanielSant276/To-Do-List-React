@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
+import NewTodo from './components/NewTodo';
+import TodoList from './components/TodoList';
+
+const App = () => {
+  const [todos, setTodos] = useState([]);
+
+  const onNewTodo = (value) => {
+    setTodos([
+      // operador de concatenação, pega os valores anteriores e adiciona o novo
+      ...todos,
+      {
+        id: new Date().getTime(),
+        title: value,
+        checked: false,
+      }
+    ])
+  }
+
+  const onToogle = (todo) => {
+    setTodos(
+      todos.map(object =>
+        object.id === todo.id ? { ...object, checked: !todo.checked } : object
+      ));
+  }
+
+  const onRemove = (todo) => {
+    setTodos(todos.filter(object => object.id !== todo.id));
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <section id='app' className='container'>
+      <header>
+        <h1 className='title'>To Do</h1>
       </header>
-    </div>
+
+      <section className='main'>
+        <NewTodo onNewTodo={onNewTodo} />
+
+        <TodoList todos={todos} onToogle={onToogle} onRemove={onRemove}/>
+      </section>
+    </section>
   );
 }
 
